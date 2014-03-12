@@ -29,4 +29,7 @@ sed -i "s/yourusernamehere/$DB_USER/" wp-tests-config.php
 sed -i "s/yourpasswordhere/$DB_PASS/" wp-tests-config.php
 
 # create database
-mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"
+RESULT=`mysql --user=$DB_USER --password=$DB_PASS --skip-column-names -e "SHOW DATABASES LIKE '$DB_NAME'"`
+if [ "$RESULT" != $DB_NAME ]; then
+    mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"
+fi
