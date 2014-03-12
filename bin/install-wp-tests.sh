@@ -23,10 +23,23 @@ svn co --ignore-externals --quiet http://unit-tests.svn.wordpress.org/trunk/ $WP
 
 cd $WP_TESTS_DIR
 cp wp-tests-config-sample.php wp-tests-config.php
-sed -i "s:dirname( __FILE__ ) . '/wordpress/':'$WP_CORE_DIR':" wp-tests-config.php
-sed -i "s/yourdbnamehere/$DB_NAME/" wp-tests-config.php
-sed -i "s/yourusernamehere/$DB_USER/" wp-tests-config.php
-sed -i "s/yourpasswordhere/$DB_PASS/" wp-tests-config.php
+
+# replace wp-test-config.php placeholder values with arguments
+TMP_FILE=`mktemp /tmp/wp-tests-config.XXX`
+sed -e "s:dirname( __FILE__ ) . '/wordpress/':'$WP_CORE_DIR':" wp-tests-config.php > $TMP_FILE
+mv $TMP_FILE wp-tests-config.php
+
+TMP_FILE=`mktemp /tmp/wp-tests-config.XXX`
+sed -e "s/youremptytestdbnamehere/$DB_NAME/" wp-tests-config.php > $TMP_FILE
+mv $TMP_FILE wp-tests-config.php
+
+TMP_FILE=`mktemp /tmp/wp-tests-config.XXX`
+sed -e "s/yourusernamehere/$DB_USER/" wp-tests-config.php > $TMP_FILE
+mv $TMP_FILE wp-tests-config.php
+
+TMP_FILE=`mktemp /tmp/wp-tests-config.XXX`
+sed -e "s/yourpasswordhere/$DB_PASS/" wp-tests-config.php > $TMP_FILE
+mv $TMP_FILE wp-tests-config.php
 
 # create database
 RESULT=`mysql --user=$DB_USER --password=$DB_PASS --skip-column-names -e "SHOW DATABASES LIKE '$DB_NAME'"`
