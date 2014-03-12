@@ -19,6 +19,11 @@ cd $WP_TESTS_DIR
 cp wp-tests-config-sample.php wp-tests-config.php
 
 # replace wp-test-config.php placeholder values with arguments
+# Don't test in debug mode
+TMP_FILE=`mktemp /tmp/wp-tests-config.XXX`
+sed -e "s/define( 'WP_DEBUG', true );/define( 'WP_DEBUG', false );/" wp-tests-config.php > $TMP_FILE
+mv $TMP_FILE wp-tests-config.php
+
 TMP_FILE=`mktemp /tmp/wp-tests-config.XXX`
 sed -e "s/youremptytestdbnamehere/$DB_NAME/" wp-tests-config.php > $TMP_FILE
 mv $TMP_FILE wp-tests-config.php
