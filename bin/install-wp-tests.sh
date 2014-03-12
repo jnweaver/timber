@@ -12,23 +12,13 @@ WP_VERSION=${4-master}
 
 set -ex
 
-# set up a WP install
-WP_CORE_DIR=/tmp/wordpress/
-mkdir -p $WP_CORE_DIR
-wget -nv -O /tmp/wordpress.tar.gz https://github.com/WordPress/WordPress/tarball/$WP_VERSION
-tar --strip-components=1 -zxmf /tmp/wordpress.tar.gz -C $WP_CORE_DIR
-
 # set up testing suite
-svn co --ignore-externals --quiet http://unit-tests.svn.wordpress.org/trunk/ $WP_TESTS_DIR
+svn co --ignore-externals --quiet http://develop.svn.wordpress.org/tags/$WP_VERSION/ $WP_TESTS_DIR
 
 cd $WP_TESTS_DIR
 cp wp-tests-config-sample.php wp-tests-config.php
 
 # replace wp-test-config.php placeholder values with arguments
-TMP_FILE=`mktemp /tmp/wp-tests-config.XXX`
-sed -e "s:dirname( __FILE__ ) . '/wordpress/':'$WP_CORE_DIR':" wp-tests-config.php > $TMP_FILE
-mv $TMP_FILE wp-tests-config.php
-
 TMP_FILE=`mktemp /tmp/wp-tests-config.XXX`
 sed -e "s/youremptytestdbnamehere/$DB_NAME/" wp-tests-config.php > $TMP_FILE
 mv $TMP_FILE wp-tests-config.php
